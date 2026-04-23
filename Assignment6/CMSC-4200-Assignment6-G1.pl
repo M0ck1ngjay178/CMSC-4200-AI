@@ -30,10 +30,13 @@ child(diana, kydd).
 
 child(charles, elizabeth).
 child(charles, philip).
+
+
 child(anne, elizabeth).
 child(anne, philip).
 child(andrew, elizabeth).
 child(andrew, philip).
+
 child(edward, elizabeth).
 child(edward, philip).
 
@@ -87,12 +90,11 @@ female(louise).
 
 % ----Relation Rules-----
 parent(X, Y) :- child(Y, X).
+
 spouse(X, Y) :- spouse(Y, X).
 
 
-sibling(X,Y) :-
-    parent(Z, X),
-    parent(Z, Y),
+sibling(X,Y) :- parent(Z, X), parent(Z, Y),
     X \= Y.
 
 mother(X, Y) :- parent(X, Y), female(X).
@@ -105,55 +107,25 @@ son(X, Y) :- male(X), parent(Y, X).
 daughter(X, Y) :- female(X), parent(Y, X).
 
 
-two_sisters(X, Y) :-
-    sister(X, Z),
-    sister(Y, Z),
-    X \= Y.
+two_sisters(X, Y) :- sister(X, Z), sister(Y, Z), X \= Y.
 
-two_brothers(X, Y) :-
-    brother(X, Z),
-    brother(Y, Z),
-    X \= Y.
+two_brothers(X, Y) :- brother(X, Z), brother(Y, Z), X \= Y.
 
-three_siblings(X, Y, Z) :-
-    sibling(X, Y),
-    sibling(Y, Z),
-    sibling(X, Z),
-    X \= Y, Y \= Z, X \= Z.
-
-
-
+three_siblings(X, Y, Z) :- sibling(X, Y), sibling(Y, Z), sibling(X, Z), X \= Y, Y \= Z, X \= Z.
 
 married(X) :- spouse(X, _).
 
-grandchild(X, Y) :-
-    parent(Y, Z),
-    parent(Z, X).
+grandchild(X, Y) :- parent(Y, Z), parent(Z, X).
 
-great_grandparent(X, Y) :-
-    parent(Y, Z),
-    parent(Z, W),
-    parent(W, X).
+great_grandparent(X, Y) :- parent(Y, Z), parent(Z, W), parent(W, X).
 
+brother_in_law(X, Y) :- spouse(X, Z), brother(Z, Y).
 
-brother_in_law(X, Y) :-
-    spouse(X, Z),
-    brother(Z, Y).
+sister_in_law(X, Y) :- spouse(X, Z), sister(Z, Y).
 
-sister_in_law(X, Y) :-
-    spouse(X, Z),
-    sister(Z, Y).
+aunt(X, Y) :- sister(X, Z), parent(Z, Y).
 
-
-
-aunt(X, Y) :-
-    sister(X, Z),
-    parent(Z, Y).
-
-uncle(X, Y) :-
-    brother(X, Z),
-    parent(Z, Y).
-
+uncle(X, Y) :- brother(X, Z), parent(Z, Y).
 
 
 has_exactly_two_children(X, Y, Z) :-
