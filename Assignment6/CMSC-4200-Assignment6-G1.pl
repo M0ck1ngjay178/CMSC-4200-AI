@@ -2,22 +2,37 @@
     GROUP 1:
     - MARGO BONAL
     - LUKE RUFFING
-    - EVAN THOMPSON
+    - EVAN THOMPSON  
 */
 
-/*Assignment Description:
 
-/*******CODE*******/
 
-% ----Relation Facts-----
+
+% *******CODE*******
+
+% ----Relation Facts------------------------------------
+
 % -------- SPOUSE --------
-spouse(george, mum).
-spouse(spencer, kydd).
-spouse(elizabeth, philip).
-spouse(diana, charles).
-spouse(anne, mark).
-spouse(andrew, sarah).
-spouse(edward, sophie).
+spouse(george,mum).
+spouse(mum,george).
+
+spouse(spencer,kydd).
+spouse(kydd,spencer).
+
+spouse(elizabeth,philip).
+spouse(philip,elizabeth).
+
+spouse(diana,charles).
+spouse(charles,diana).
+
+spouse(anne,mark).
+spouse(mark,anne).
+
+spouse(andrew,sarah).
+spouse(sarah,andrew).
+
+spouse(edward,sophie).
+spouse(sophie,edward).
 
 % -------- CHILD --------
 child(elizabeth, george).
@@ -87,31 +102,31 @@ female(beatrice).
 female(eugenie).
 female(louise).
 
+% ----END Relation Facts------------------------------------
 
 % ----Relation Rules-----
 parent(X, Y) :- child(Y, X).
 
-spouse(X, Y) :- spouse(Y, X).
-
-
-sibling(X,Y) :- parent(Z, X), parent(Z, Y),
-    X \= Y.
-
 mother(X, Y) :- parent(X, Y), female(X).
 father(X, Y) :- parent(X, Y), male(X).
 
+%sibling has duplicates hmmm
+sibling(X, Y) :-
+    X @< Y, parent(P, X), parent(P, Y).
+
 brother(X, Y) :- male(X), sibling(X, Y).
+
 sister(X, Y) :- female(X), sibling(X, Y).
 
 son(X, Y) :- male(X), parent(Y, X).
+
 daughter(X, Y) :- female(X), parent(Y, X).
 
 
-two_sisters(X, Y) :- sister(X, Z), sister(Y, Z), X \= Y.
 
-two_brothers(X, Y) :- brother(X, Z), brother(Y, Z), X \= Y.
 
-three_siblings(X, Y, Z) :- sibling(X, Y), sibling(Y, Z), sibling(X, Z), X \= Y, Y \= Z, X \= Z.
+
+
 
 married(X) :- spouse(X, _).
 
@@ -119,17 +134,26 @@ grandchild(X, Y) :- parent(Y, Z), parent(Z, X).
 
 great_grandparent(X, Y) :- parent(Y, Z), parent(Z, W), parent(W, X).
 
-brother_in_law(X, Y) :- spouse(X, Z), brother(Z, Y).
+brother_in_law(X, Y) :- spouse(Y, Z), brother(X, Z).
 
-sister_in_law(X, Y) :- spouse(X, Z), sister(Z, Y).
+sister_in_law(X, Y) :- spouse(Y, Z), sister(X, Z).
 
 aunt(X, Y) :- sister(X, Z), parent(Z, Y).
 
 uncle(X, Y) :- brother(X, Z), parent(Z, Y).
 
 
-has_exactly_two_children(X, Y, Z) :-
-    parent(X, Y),
-    parent(X, Z),
-    Y \= Z,
-    \+ (parent(X, W), W \= Y, W \= Z).
+
+
+
+
+
+% these not right
+/*two_sisters(X, Y) :- sister(X, Z), sister(Y, Z), X \= Y.
+
+two_brothers(X, Y) :- brother(X, Z), brother(Y, Z), X \= Y.
+
+three_siblings(X, Y, Z) :- sibling(X, Y), sibling(Y, Z), sibling(X, Z), X \= Y, Y \= Z, X \= Z.
+
+has_exactly_two_children(X, Y, Z) :- parent(X, Y), parent(X, Z), Y \= Z, \+ (parent(X, W), W \= Y, W \= Z).
+*/
