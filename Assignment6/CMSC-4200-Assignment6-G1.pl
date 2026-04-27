@@ -5,9 +5,6 @@
     - EVAN THOMPSON  
 */
 
-
-
-
 % *******CODE*******
 
 % ----Relation Facts------------------------------------
@@ -45,7 +42,6 @@ child(diana, kydd).
 
 child(charles, elizabeth).
 child(charles, philip).
-
 
 child(anne, elizabeth).
 child(anne, philip).
@@ -110,9 +106,10 @@ parent(X, Y) :- child(Y, X).
 mother(X, Y) :- parent(X, Y), female(X).
 father(X, Y) :- parent(X, Y), male(X).
 
-%sibling has duplicates hmmm
+% use father here instead of parent to avoid duplicates since before we could check both parents and get the same siblings twice
+% move X @< Y to the end
 sibling(X, Y) :-
-    X @< Y, parent(P, X), parent(P, Y).
+    father(P, X), father(P, Y), X @< Y.
 
 brother(X, Y) :- male(X), sibling(X, Y).
 
@@ -121,12 +118,6 @@ sister(X, Y) :- female(X), sibling(X, Y).
 son(X, Y) :- male(X), parent(Y, X).
 
 daughter(X, Y) :- female(X), parent(Y, X).
-
-
-
-
-
-
 
 married(X) :- spouse(X, _).
 
@@ -142,18 +133,10 @@ aunt(X, Y) :- sister(X, Z), parent(Z, Y).
 
 uncle(X, Y) :- brother(X, Z), parent(Z, Y).
 
-
-
-
-
-
-
-% these not right
-/*two_sisters(X, Y) :- sister(X, Z), sister(Y, Z), X \= Y.
+two_sisters(X, Y) :- sister(X, Z), sister(Y, Z), X \= Y.
 
 two_brothers(X, Y) :- brother(X, Z), brother(Y, Z), X \= Y.
 
 three_siblings(X, Y, Z) :- sibling(X, Y), sibling(Y, Z), sibling(X, Z), X \= Y, Y \= Z, X \= Z.
 
 has_exactly_two_children(X, Y, Z) :- parent(X, Y), parent(X, Z), Y \= Z, \+ (parent(X, W), W \= Y, W \= Z).
-*/
