@@ -2,7 +2,7 @@
     GROUP 1:
     - MARGO BONAL
     - LUKE RUFFING
-    - EVAN THOMPSON  
+    - EVAN THOMPSON
 */
 
 % *******CODE*******
@@ -47,6 +47,7 @@ child(charles, philip).
 
 child(anne, elizabeth).
 child(anne, philip).
+
 child(andrew, elizabeth).
 child(andrew, philip).
 
@@ -108,10 +109,8 @@ parent(X, Y) :- child(Y, X).
 mother(X, Y) :- parent(X, Y), female(X).
 father(X, Y) :- parent(X, Y), male(X).
 
-% use father here instead of parent to avoid duplicates since before we could check both parents and get the same siblings twice
-% move X @< Y to the end
 sibling(X, Y) :-
-    father(P, X), father(P, Y), X @< Y.
+    parent(P, X), parent(P, Y), X\=Y.
 
 brother(X, Y) :- male(X), sibling(X, Y).
 
@@ -125,19 +124,33 @@ married(X) :- spouse(X, _).
 
 grandchild(X, Y) :- parent(Y, Z), parent(Z, X).
 
-great_grandparent(X, Y) :- parent(Y, Z), parent(Z, W), parent(W, X).
+great_grandparent(X, Y) :- parent(X, Z), parent(Z, W), parent(W, Y).
 
+%Spouses Brother
 brother_in_law(X, Y) :- spouse(Y, Z), brother(X, Z).
 
+%Spouses Siblings Husband
+brother_in_law(X, Y) :- spouse(Y, Z), sibling(Z, W), spouse(W, X), male(X).
+
+%Siblings Spouse
+brother_in_law(X, Y) :- sibling(Y, Z), spouse(Z, X), male(X).
+
+%Spouses Sister
 sister_in_law(X, Y) :- spouse(Y, Z), sister(X, Z).
+
+%Spouses Siblings Wife
+sister_in_law(X, Y) :- spouse(Y, Z), sibling(Z, W), spouse(W, X), female(X).
+
+%Siblings Spouse
+sister_in_law(X, Y) :- sibling(Y, Z), spouse(Z, X), female(X).
 
 aunt(X, Y) :- sister(X, Z), parent(Z, Y).
 
 uncle(X, Y) :- brother(X, Z), parent(Z, Y).
 
-two_sisters(X, Y) :- sister(X, Z), sister(Y, Z), X \= Y.
+two_sisters(X, Y) :- sibling(X, Y), female(X), female(Y).
 
-two_brothers(X, Y) :- brother(X, Z), brother(Y, Z), X \= Y.
+two_brothers(X, Y) :- sibling(X, Y), male(X), male(Y).
 
 three_siblings(X, Y, Z) :- sibling(X, Y), sibling(Y, Z), sibling(X, Z), X \= Y, Y \= Z, X \= Z.
 
