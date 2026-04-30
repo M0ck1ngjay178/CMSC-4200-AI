@@ -7,8 +7,6 @@
 
 % *******CODE*******
 
-%note: looks like brother in law of diana and great_grandparents of zara is off
-
 % ----Relation Facts------------------------------------
 
 % -------- SPOUSE --------
